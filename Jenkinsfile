@@ -1,14 +1,22 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(
+            name: 'ENV',
+            choices: ['dev', 'prod'],
+            description: '选择部署环境'
+        )
+    }
+
     environment {
-        APP_PORT = '9090'
+        APP_PORT = "${params.ENV == 'prod' ? '8080' : '9090'}"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                echo '📦 拉取代码...'
+                echo "📦 拉取代码..."
                 checkout scm
             }
         }
@@ -22,31 +30,31 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo '🚀 部署应用...'
-                sh '''
+                echo "🚀 部署到 [${params.ENV}] 环境..."
+                sh """
                     chmod +x deploy.sh
-                    ./deploy.sh
-                '''
+                    ./deploy.sh ${params.ENV}
+                """
             }
         }
 
         stage('Verify') {
             steps {
                 echo '✅ 验证...'
-                sh '''
+                sh """
                     sleep 2
-                    curl -sf http://localhost:9090/ && echo "部署成功！" || echo "检查中..."
-                '''
+                    curl -sf http://localhost:${APP_PORT}/ && echo "部署成功！" || echo "检查中..."
+                """
             }
         }
     }
 
     post {
         success {
-            echo '🎉 流水线成功！访问 http://localhost:9090/'
+            echo "🎉 [${params.ENV}] 流水线成功 → http://localhost:${APP_PORT}/"
         }
         failure {
-            echo '❌ 流水线失败，请查看日志'
+            echo "❌ [${params.ENV}] 流水线失败"
         }
     }
 }

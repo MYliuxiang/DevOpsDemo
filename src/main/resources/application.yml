@@ -1,0 +1,8 @@
+# ===== 公共配置 =====
+spring:
+  application:
+    name: welcome-liuxiang
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false

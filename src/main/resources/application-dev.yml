@@ -1,0 +1,11 @@
+# ===== 开发/测试环境 =====
+server:
+  port: 9090
+
+spring:
+  thymeleaf:
+    cache: false  # 开发时不缓存模板，修改即时生效
+
+logging:
+  level:
+    com.example.demo: DEBUG   # 开发环境打印详细日志

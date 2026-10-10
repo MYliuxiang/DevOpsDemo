@@ -1,10 +1,26 @@
 services:
-  welcome-app:
+  # ===== 开发/测试环境 =====
+  welcome-app-dev:
     build:
       context: .
       dockerfile: Dockerfile
-    image: welcome-liuxiang:latest
-    container_name: welcome-liuxiang-app
+      args:
+        ENV: dev
+    image: welcome-liuxiang:dev
+    container_name: welcome-liuxiang-dev
     ports:
-      - "9090:8080"
+      - "9090:9090"
+    restart: unless-stopped
+
+  # ===== 线上生产环境 =====
+  welcome-app-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ENV: prod
+    image: welcome-liuxiang:prod
+    container_name: welcome-liuxiang-prod
+    ports:
+      - "8080:8080"
     restart: unless-stopped
