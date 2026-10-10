@@ -11,9 +11,8 @@ pipeline {
 
     environment {
         APP_PORT = "${params.ENV == 'prod' ? '8081' : '9090'}"
-        MVN_HOME = '/opt/homebrew/bin'
-        JAVA_HOME = '/usr/bin'
-        PATH = "${MVN_HOME}:${JAVA_HOME}:${PATH}"
+        JAVA_HOME = '/Users/test/Library/Java/JavaVirtualMachines/ms-17.0.20.1/Contents/Home'
+        PATH = "/opt/homebrew/bin:${JAVA_HOME}/bin:/usr/bin:/usr/sbin:${PATH}"
     }
 
     stages {
