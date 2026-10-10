@@ -33,10 +33,13 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo "🚀 部署到 [${params.ENV}] 环境..."
-                sh """
-                    chmod +x deploy.sh
-                    bash deploy.sh ${params.ENV}
-                """
+                // 防止 Jenkins 在流水线结束时杀掉子进程
+                withEnv(['JENKINS_NODE_COOKIE=dontKillMe']) {
+                    sh '''
+                        chmod +x deploy.sh
+                        bash deploy.sh ${ENV}
+                    '''
+                }
             }
         }
 
