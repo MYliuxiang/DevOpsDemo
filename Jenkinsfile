@@ -36,17 +36,23 @@ pipeline {
                 echo "🐳 Docker 部署到 [${params.ENV}] 环境..."
 
                 script {
-                    if (params.ENV == 'dev') {
-                        sh '''
-                            docker compose --project-name welcome-liuxiang up -d --build welcome-app-dev
-                            docker rm -f welcome-liuxiang-prod 2>/dev/null || true
-                        '''
-                    } else {
-                        sh '''
-                            docker compose --project-name welcome-liuxiang up -d --build welcome-app-prod
-                            docker rm -f welcome-liuxiang-dev 2>/dev/null || true
-                        '''
-                    }
+                    def serviceName = params.ENV == 'dev' ? 'welcome-app-dev' : 'welcome-app-prod'
+                    def otherService = params.ENV == 'dev' ? 'welcome-app-prod' : 'welcome-app-dev'
+                    def containerName = params.ENV == 'dev' ? 'welcome-liuxiang-dev' : 'welcome-liuxiang-prod'
+                    def otherContainer = params.ENV == 'dev' ? 'welcome-liuxiang-prod' : 'welcome-liuxiang-dev'
+
+                    sh """
+                        # 先停掉当前环境的容器
+                        docker compose --project-name welcome-liuxiang stop ${serviceName} 2>/dev/null || true
+                        docker compose --project-name welcome-liuxiang rm -f ${serviceName} 2>/dev/null || true
+                        sleep 2
+
+                        # 启动新容器
+                        docker compose --project-name welcome-liuxiang up -d --build ${serviceName}
+
+                        # 停掉另一个环境的容器（只保留当前环境）
+                        docker rm -f ${otherContainer} 2>/dev/null || true
+                    """
                 }
             }
         }
