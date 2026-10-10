@@ -12,7 +12,7 @@ pipeline {
     environment {
         APP_PORT = "${params.ENV == 'prod' ? '8081' : '9090'}"
         JAVA_HOME = '/Users/test/Library/Java/JavaVirtualMachines/ms-17.0.20.1/Contents/Home'
-        PATH = "/opt/homebrew/bin:${JAVA_HOME}/bin:/usr/bin:/usr/sbin:${PATH}"
+        PATH = "/opt/homebrew/bin:/usr/local/bin:${JAVA_HOME}/bin:/usr/bin:/usr/sbin:${PATH}"
         PROJECT_NAME = 'welcome-liuxiang'
     }
 
