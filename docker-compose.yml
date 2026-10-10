@@ -1,0 +1,10 @@
+services:
+  welcome-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: welcome-liuxiang:latest
+    container_name: welcome-liuxiang-app
+    ports:
+      - "9090:8080"
+    restart: unless-stopped
