@@ -11,6 +11,9 @@ pipeline {
 
     environment {
         APP_PORT = "${params.ENV == 'prod' ? '8080' : '9090'}"
+        MVN_HOME = '/opt/homebrew/bin'
+        JAVA_HOME = '/usr/bin'
+        PATH = "${MVN_HOME}:${JAVA_HOME}:${PATH}"
     }
 
     stages {
@@ -24,7 +27,7 @@ pipeline {
         stage('Maven Build') {
             steps {
                 echo '🔨 Maven 编译打包...'
-                sh 'mvn clean package -DskipTests -B -Dmaven.repo.local=/tmp/.m2repo'
+                sh '/opt/homebrew/bin/mvn clean package -DskipTests -B -Dmaven.repo.local=/tmp/.m2repo'
             }
         }
 
@@ -33,7 +36,7 @@ pipeline {
                 echo "🚀 部署到 [${params.ENV}] 环境..."
                 sh """
                     chmod +x deploy.sh
-                    ./deploy.sh ${params.ENV}
+                    bash deploy.sh ${params.ENV}
                 """
             }
         }

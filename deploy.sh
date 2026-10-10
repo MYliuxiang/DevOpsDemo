@@ -1,7 +1,9 @@
 #!/bin/bash
 set -e
 
-ENV=${1:-dev}   # 默认 dev，也可以传 prod
+export PATH="/usr/bin:/usr/sbin:/opt/homebrew/bin:$PATH"
+
+ENV=${1:-dev}
 APP_NAME="welcome-liuxiang-${ENV}"
 JAR_FILE="target/demo-0.0.1-SNAPSHOT.jar"
 
@@ -24,10 +26,10 @@ if [ -f "$PID_FILE" ]; then
 fi
 
 # 按端口清理
-PORT_PID=$(lsof -ti:$PORT 2>/dev/null || true)
+PORT_PID=$(/usr/sbin/lsof -ti:$PORT 2>/dev/null || true)
 [ -n "$PORT_PID" ] && kill $PORT_PID 2>/dev/null && sleep 3
 
-nohup java -jar "$JAR_FILE" --spring.profiles.active="$ENV" > "$LOG_FILE" 2>&1 &
+nohup /usr/bin/java -jar "$JAR_FILE" --spring.profiles.active="$ENV" > "$LOG_FILE" 2>&1 &
 NEW_PID=$!
 echo "$NEW_PID" > "$PID_FILE"
 sleep 5
