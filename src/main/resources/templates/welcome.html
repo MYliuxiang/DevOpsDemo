@@ -28,6 +28,7 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             text-align: center;
             animation: fadeInUp 0.8s ease-out;
+            position: relative;
         }
 
         .welcome-icon {
@@ -56,6 +57,28 @@
             font-size: 18px;
             color: #999;
             letter-spacing: 2px;
+            margin-bottom: 24px;
+        }
+
+        /* 环境标签 */
+        .env-badge {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .env-badge.dev {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+        .env-badge.prod {
+            background: #fce4ec;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
         }
 
         @keyframes fadeInUp {
@@ -76,6 +99,12 @@
         <h1 class="welcome-title">欢迎</h1>
         <h2 class="welcome-name" th:text="${name}">刘翔</h2>
         <p class="welcome-subtitle">WELCOME · 欢迎光临</p>
+
+        <!-- 环境标签 -->
+        <span class="env-badge" th:class="'env-badge ' + ${env}"
+              th:text="${env == 'prod' ? '🔴 生产环境' : '🟢 测试环境'}">
+            🟢 测试环境
+        </span>
     </div>
 </body>
 </html>
