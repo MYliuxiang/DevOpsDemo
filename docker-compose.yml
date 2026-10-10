@@ -22,5 +22,5 @@ services:
     image: welcome-liuxiang:prod
     container_name: welcome-liuxiang-prod
     ports:
-      - "8080:8080"
+      - "8081:8081"
     restart: unless-stopped

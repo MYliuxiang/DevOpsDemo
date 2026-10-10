@@ -9,7 +9,7 @@ JAR_FILE="target/demo-0.0.1-SNAPSHOT.jar"
 
 case "$ENV" in
     dev)  PORT=9090 ;;
-    prod) PORT=8080 ;;
+    prod) PORT=8081 ;;
     *)    echo "未知环境: $ENV (可选: dev, prod)"; exit 1 ;;
 esac
 

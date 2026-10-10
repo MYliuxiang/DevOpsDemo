@@ -10,7 +10,7 @@ pipeline {
     }
 
     environment {
-        APP_PORT = "${params.ENV == 'prod' ? '8080' : '9090'}"
+        APP_PORT = "${params.ENV == 'prod' ? '8081' : '9090'}"
         MVN_HOME = '/opt/homebrew/bin'
         JAVA_HOME = '/usr/bin'
         PATH = "${MVN_HOME}:${JAVA_HOME}:${PATH}"
