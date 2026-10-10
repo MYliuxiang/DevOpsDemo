@@ -13,6 +13,7 @@ pipeline {
         APP_PORT = "${params.ENV == 'prod' ? '8081' : '9090'}"
         JAVA_HOME = '/Users/test/Library/Java/JavaVirtualMachines/ms-17.0.20.1/Contents/Home'
         PATH = "/opt/homebrew/bin:${JAVA_HOME}/bin:/usr/bin:/usr/sbin:${PATH}"
+        PROJECT_NAME = 'welcome-liuxiang'
     }
 
     stages {
@@ -30,15 +31,22 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Docker Deploy') {
             steps {
-                echo "🚀 部署到 [${params.ENV}] 环境..."
-                // 防止 Jenkins 在流水线结束时杀掉子进程
-                withEnv(['JENKINS_NODE_COOKIE=dontKillMe']) {
-                    sh '''
-                        chmod +x deploy.sh
-                        bash deploy.sh ${ENV}
-                    '''
+                echo "🐳 Docker 部署到 [${params.ENV}] 环境..."
+
+                script {
+                    if (params.ENV == 'dev') {
+                        sh '''
+                            docker compose --project-name welcome-liuxiang up -d --build welcome-app-dev
+                            docker rm -f welcome-liuxiang-prod 2>/dev/null || true
+                        '''
+                    } else {
+                        sh '''
+                            docker compose --project-name welcome-liuxiang up -d --build welcome-app-prod
+                            docker rm -f welcome-liuxiang-dev 2>/dev/null || true
+                        '''
+                    }
                 }
             }
         }
@@ -47,7 +55,7 @@ pipeline {
             steps {
                 echo '✅ 验证...'
                 sh """
-                    sleep 2
+                    sleep 3
                     curl -sf http://localhost:${APP_PORT}/ && echo "部署成功！" || echo "检查中..."
                 """
             }
@@ -56,10 +64,10 @@ pipeline {
 
     post {
         success {
-            echo "🎉 [${params.ENV}] 流水线成功 → http://localhost:${APP_PORT}/"
+            echo "🎉 [${params.ENV}] Docker 部署成功 → http://localhost:${APP_PORT}/"
         }
         failure {
-            echo "❌ [${params.ENV}] 流水线失败"
+            echo "❌ [${params.ENV}] 部署失败"
         }
     }
 }
